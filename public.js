@@ -44,3 +44,25 @@
         }
     };
 }(window));
+;(function(window,undefined){
+    window.App = {};
+    App.pageEvents = new Object();
+    App.pageEvents.bindEvent = function(e){
+        var node = $(e.target), evt;
+        e.preventDefault();
+        evt = node.attr("event");
+        if(!evt){
+            node = $(node.parent());
+            evt = node.attr("event");
+            if(!evt) return;
+        }
+        e.stopPropagation();
+        if(evt.indexOf(e.type) === 0){
+            var evtName = evt.split(":")[1];
+            if(typeof App.pageEvents[evtName] === "function"){
+                App.pageEvents[evt.split(":")[1]](node);
+            }
+        }
+    }
+    $(document).on("click input", App.pageEvents.bindEvent);
+}(window));
